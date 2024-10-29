@@ -1,27 +1,32 @@
-var builder = WebApplication.CreateBuilder(args);
+    using Apoio.Data;
+    using Microsoft.EntityFrameworkCore;
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    // Add services to the container.
+    builder.Services.AddControllersWithViews();
+    var connectionString = builder.Configuration.GetConnectionString("WebetConnection");
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+    builder.Services.AddDbContext<WebetContext>(options => options.UseSqlServer(connectionString));
+    var app = builder.Build();
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Home/Error");
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
+    }
 
-app.UseRouting();
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
 
-app.UseAuthorization();
+    app.UseRouting();
 
-app.MapControllerRoute(
-    name: "Empresa",
-    pattern: "{controller=Apoio}/{action=Empresa}/{id?}");
+    app.UseAuthorization();
 
-app.Run();
+    app.MapControllerRoute(
+        name: "Empresa",
+        pattern: "{controller=Apoio}/{action=Empresa}/{id?}");
+
+    app.Run();
